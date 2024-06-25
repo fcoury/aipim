@@ -1,3 +1,4 @@
+#![allow(unused)]
 use async_trait::async_trait;
 use log::{debug, trace};
 use reqwest::Client;

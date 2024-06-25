@@ -45,6 +45,7 @@ impl MessageBuilder {
         }
     }
 
+    #[allow(unused)]
     pub fn text(mut self, text: impl Into<String>) -> Self {
         self.text = Some(text.into());
         self
