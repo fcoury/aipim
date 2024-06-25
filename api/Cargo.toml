@@ -1,0 +1,16 @@
+[package]
+name = "aipim-api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+aipim = { version = "0.1", path = "../core" }
+anyhow.workspace = true
+async-trait.workspace = true
+axum = { version = "0.7.5", features = ["macros"] }
+clap = { version = "4.5.7", features = ["derive"] }
+dotenv = "0.15.0"
+serde.workspace = true
+serde_json.workspace = true
+tokio = { version = "1.38.0", features = ["full"] }
+
