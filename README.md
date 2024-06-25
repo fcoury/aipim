@@ -1,5 +1,9 @@
 # AI Primary Interface Module - AIPIM
 
+<p align="center">
+  <img src="assets/icon-nobg.png" alt="AIPIM Icon" />
+</p>
+
 AIPIM is a Rust library designed to provide a unified interface for interacting with various AI providers. It abstracts the complexities of different AI APIs, allowing developers to easily switch between providers without changing their codebase.
 
 ## Features
