@@ -5,12 +5,12 @@ use base64::{engine::general_purpose, Engine as _};
 use crate::provider::{AIProvider, Anthropic, OpenAI};
 
 /// The `Client` struct is responsible for interacting with different AI providers.
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```
 /// use your_crate::client::Client;
-/// 
+///
 /// let client = Client::new("gpt-3.5-turbo").unwrap();
 /// let response = client.message().text("Hello, world!").send().await.unwrap();
 /// println!("{}", response.text);
@@ -69,12 +69,12 @@ impl Client {
 }
 
 /// The `MessageBuilder` struct is used to build messages to be sent to the AI provider.
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```
 /// use your_crate::client::{Client, MessageBuilder};
-/// 
+///
 /// let client = Client::new("gpt-3.5-turbo").unwrap();
 /// let builder = client.message().text("Hello, world!");
 /// ```
@@ -237,8 +237,6 @@ impl MessageBuilder {
 }
 
 #[derive(Debug)]
-/// The `Response` struct represents a response from the AI provider.
-/// The `Image` struct represents an image to be sent to the AI provider.
 /// The `Message` struct represents a message to be sent to the AI provider.
 pub struct Message {
     pub text: String,
@@ -246,12 +244,14 @@ pub struct Message {
 }
 
 #[derive(Debug)]
+/// The `Image` struct represents an image to be sent to the AI provider.
 pub struct Image {
     pub data: String,
     pub mime_type: String,
 }
 
 #[derive(Debug)]
+/// The `Response` struct represents a response from the AI provider.
 pub struct Response {
     pub text: String,
 }

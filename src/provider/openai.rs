@@ -12,6 +12,17 @@ const MAX_TOKENS: u32 = 4096;
 const BASE_URL: &str = "https://api.openai.com/v1/";
 const MODELS: &[&str] = &["gpt-4o", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"];
 
+/// Represents an OpenAI client for interacting with the OpenAI API.
+///
+/// # Examples
+///
+/// ```
+/// use crate::provider::openai::OpenAI;
+///
+/// let api_key = "your_api_key";
+/// let model = "gpt-3.5-turbo";
+/// let openai = OpenAI::new(api_key, model);
+/// ```
 pub struct OpenAI {
     client: Client,
     api_key: String,
@@ -19,6 +30,22 @@ pub struct OpenAI {
 }
 
 impl OpenAI {
+    /// Creates a new `OpenAI` instance.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - A string slice that holds the API key.
+    /// * `model` - A string slice that holds the name of the model.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use crate::provider::openai::OpenAI;
+    ///
+    /// let api_key = "your_api_key";
+    /// let model = "gpt-3.5-turbo";
+    /// let openai = OpenAI::new(api_key, model);
+    /// ```
     pub fn new(api_key: impl Into<String>, model: impl Into<String>) -> Self {
         Self {
             client: Client::new(),
@@ -27,6 +54,22 @@ impl OpenAI {
         }
     }
 
+    /// Sets the model for the `OpenAI` instance.
+    ///
+    /// # Arguments
+    ///
+    /// * `model` - A string slice that holds the name of the model.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use crate::provider::openai::OpenAI;
+    ///
+    /// let api_key = "your_api_key";
+    /// let model = "gpt-3.5-turbo";
+    /// let new_model = "gpt-4";
+    /// let openai = OpenAI::new(api_key, model).with_model(new_model);
+    /// ```
     pub fn with_model(self, model: impl Into<String>) -> Self {
         Self {
             model: model.into(),
@@ -46,6 +89,35 @@ impl Default for OpenAI {
 
 #[async_trait]
 impl AIProvider for OpenAI {
+    /// Sends a message to the OpenAI API.
+    ///
+    /// # Arguments
+    ///
+    /// * `message` - A `client::Message` instance containing the message to be sent.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the request fails or the response contains an error.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use crate::provider::openai::OpenAI;
+    /// use crate::client::{Client, MessageBuilder};
+    ///
+    /// let api_key = "your_api_key";
+    /// let model = "gpt-3.5-turbo";
+    /// let openai = OpenAI::new(api_key, model);
+    ///
+    /// let client = Client::new(openai);
+    /// let message = MessageBuilder::new(client)
+    ///     .text("Hello, OpenAI!")
+    ///     .send()
+    ///     .await
+    ///     .unwrap();
+    ///
+    /// println!("Response: {}", message.text);
+    /// ```
     async fn send_message(&self, message: client::Message) -> anyhow::Result<client::Response> {
         let mut content = Content::Complex(vec![ComplexContent::Text(Text {
             typ: "text".to_string(),
@@ -121,6 +193,7 @@ impl AIProvider for OpenAI {
 }
 
 #[derive(Serialize, Debug)]
+/// Represents a request to the OpenAI API.
 struct Request {
     model: String,
     messages: Vec<ChatMessage>,
@@ -128,6 +201,7 @@ struct Request {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+/// Represents a chat message to be sent to the OpenAI API.
 struct ChatMessage {
     role: String,
     content: Content,
@@ -135,6 +209,7 @@ struct ChatMessage {
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
+/// Represents the content of a chat message.
 enum Content {
     Simple(String),
     Complex(Vec<ComplexContent>),
@@ -157,12 +232,14 @@ impl Content {
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(tag = "type")]
+/// Represents complex content types for a chat message.
 enum ComplexContent {
     Text(Text),
     Image(Image),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+/// Represents text content for a chat message.
 struct Text {
     text: String,
     #[serde(rename = "type")]
@@ -170,6 +247,7 @@ struct Text {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+/// Represents image content for a chat message.
 struct Image {
     image_url: ImageUrl,
     #[serde(rename = "type")]
@@ -177,18 +255,21 @@ struct Image {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+/// Represents the URL of an image.
 struct ImageUrl {
     url: String,
 }
 
 #[derive(Deserialize, Debug)]
 #[serde(untagged)]
+/// Represents a response from the OpenAI API.
 enum Response {
     Message(Message),
     Error { error: Error },
 }
 
 #[derive(Deserialize, Debug)]
+/// Represents a message in the response from the OpenAI API.
 struct Message {
     id: String,
     object: String,
@@ -200,6 +281,7 @@ struct Message {
 }
 
 #[derive(Deserialize, Debug)]
+/// Represents an error in the response from the OpenAI API.
 struct Error {
     code: Option<String>,
     message: String,
@@ -209,6 +291,7 @@ struct Error {
 }
 
 #[derive(Deserialize, Debug)]
+/// Represents a choice in the response from the OpenAI API.
 struct Choice {
     index: usize,
     message: ChatMessage,
@@ -217,6 +300,7 @@ struct Choice {
 }
 
 #[derive(Deserialize, Debug)]
+/// Represents the usage information in the response from the OpenAI API.
 struct Usage {
     prompt_tokens: usize,
     completion_tokens: usize,
@@ -224,10 +308,12 @@ struct Usage {
 }
 
 #[cfg(test)]
+/// Unit tests for the OpenAI module.
 mod tests {
     use super::*;
 
     #[test]
+    /// Tests parsing a successful response from the OpenAI API.
     fn test_parse() {
         let res = r#"
         {
@@ -259,6 +345,7 @@ mod tests {
     }
 
     #[test]
+    /// Tests parsing an error response from the OpenAI API.
     fn test_parse_error() {
         let error = r#"
             {
@@ -278,6 +365,7 @@ mod tests {
     }
 
     #[test]
+    /// Tests the `as_text` method of the `Content` enum.
     fn test_as_text() {
         let simple = Content::Simple("text".to_string());
         assert_eq!(simple.as_text(), Some("text"));
@@ -290,6 +378,7 @@ mod tests {
     }
 
     #[test]
+    /// Tests creating a new `OpenAI` instance.
     fn test_openai_new() {
         let api_key = "test_api_key";
         let model = "gpt-3.5-turbo";
@@ -299,6 +388,7 @@ mod tests {
     }
 
     #[test]
+    /// Tests setting the model for an `OpenAI` instance.
     fn test_openai_with_model() {
         let api_key = "test_api_key";
         let model = "gpt-3.5-turbo";
@@ -308,6 +398,7 @@ mod tests {
     }
 
     #[test]
+    /// Tests pushing content to a `Content` instance.
     fn test_content_push() {
         let mut content = Content::Complex(vec![ComplexContent::Text(Text {
             typ: "text".to_string(),
@@ -327,6 +418,7 @@ mod tests {
     }
 
     #[test]
+    /// Tests parsing a message response from the OpenAI API.
     fn test_response_message() {
         let res = r#"
         {
@@ -365,6 +457,7 @@ mod tests {
     }
 
     #[test]
+    /// Tests parsing an error response with a code from the OpenAI API.
     fn test_response_error_with_code() {
         let error = r#"
             {
