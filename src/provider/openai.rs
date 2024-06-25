@@ -26,6 +26,97 @@ impl OpenAI {
         }
     }
 
+    #[test]
+    fn test_openai_new() {
+        let api_key = "test_api_key";
+        let model = "gpt-3.5-turbo";
+        let openai = OpenAI::new(api_key, model);
+        assert_eq!(openai.api_key, api_key);
+        assert_eq!(openai.model, model);
+    }
+
+    #[test]
+    fn test_openai_with_model() {
+        let api_key = "test_api_key";
+        let model = "gpt-3.5-turbo";
+        let new_model = "gpt-4";
+        let openai = OpenAI::new(api_key, model).with_model(new_model);
+        assert_eq!(openai.model, new_model);
+    }
+
+    #[test]
+    fn test_content_push() {
+        let mut content = Content::Complex(vec![ComplexContent::Text(Text {
+            typ: "text".to_string(),
+            text: "initial text".to_string(),
+        })]);
+        content.push(ComplexContent::Image(Image {
+            typ: "image_url".to_string(),
+            image_url: ImageUrl {
+                url: "http://example.com/image.jpg".to_string(),
+            },
+        }));
+        if let Content::Complex(vec) = content {
+            assert_eq!(vec.len(), 2);
+        } else {
+            panic!("Content is not complex");
+        }
+    }
+
+    #[test]
+    fn test_response_message() {
+        let res = r#"
+        {
+          "choices": [
+            {
+              "finish_reason": "length",
+              "index": 0,
+              "logprobs": null,
+              "message": {
+                "content": "response",
+                "role": "assistant"
+              }
+            }
+          ],
+          "created": 1719328775,
+          "id": "chatcmpl-9e2FDY8pjRfZqufnqa4XSu5f26aUy",
+          "model": "gpt-4o-2024-05-13",
+          "object": "chat.completion",
+          "system_fingerprint": "fp_8c6b918852",
+          "usage": {
+            "completion_tokens": 1024,
+            "prompt_tokens": 1563,
+            "total_tokens": 2587
+          }
+        }
+        "#;
+        let response = serde_json::from_str::<Response>(res).unwrap();
+        if let Response::Message(message) = response {
+            assert_eq!(message.choices[0].message.content.as_text(), Some("response"));
+        } else {
+            panic!("Response is not a message");
+        }
+    }
+
+    #[test]
+    fn test_response_error_with_code() {
+        let error = r#"
+            {
+              "error": {
+                "code": "invalid_request_error",
+                "message": "Invalid content type. image_url is only supported by certain models.",
+                "param": "messages.[0].content.[1].type",
+                "type": "invalid_request_error"
+              }
+            }
+        "#;
+        let response = serde_json::from_str::<Response>(error).unwrap();
+        let Response::Error { error } = response else {
+            panic!("expected error response, got: {:?}", response);
+        };
+        assert_eq!(error.code, Some("invalid_request_error".to_string()));
+    }
+
     pub fn with_model(self, model: impl Into<String>) -> Self {
         Self {
             model: model.into(),
