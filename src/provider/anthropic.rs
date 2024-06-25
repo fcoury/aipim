@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use log::trace;
+use log::{debug, trace};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 
@@ -102,7 +102,7 @@ impl AIProvider for Anthropic {
         );
 
         let response = serde_json::from_value::<Response>(response)?;
-        trace!("Parsed Response: {:#?}", response);
+        debug!("Anthropic Response: {:#?}", response);
 
         if response.is_error() {
             return Err(anyhow::anyhow!(response.error().error.message.clone()));

@@ -2,16 +2,27 @@ use std::path::Path;
 
 use base64::{engine::general_purpose, Engine as _};
 
-use crate::provider::{AIProvider, Anthropic};
+use crate::provider::{AIProvider, Anthropic, OpenAI};
 
 pub struct Client {
     provider: Box<dyn AIProvider>,
 }
 
 impl Client {
-    pub fn new(model: &str) -> Self {
-        let provider = Box::new(Anthropic::default().with_model(model));
-        Self { provider }
+    pub fn new(model: &str) -> anyhow::Result<Self> {
+        if model.starts_with("gpt") {
+            return Ok(Self {
+                provider: Box::new(OpenAI::default().with_model(model)),
+            });
+        }
+
+        if model.starts_with("claude") {
+            return Ok(Self {
+                provider: Box::new(Anthropic::default().with_model(model)),
+            });
+        }
+
+        Err(anyhow::anyhow!("unsupported model: {model}"))
     }
 
     pub fn message(self) -> MessageBuilder {

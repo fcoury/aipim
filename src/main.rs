@@ -4,7 +4,8 @@ use simplelog::{ColorChoice, CombinedLogger, Config, LevelFilter, TermLogger, Te
 mod client;
 mod provider;
 
-const MODEL: &str = "claude-3-5-sonnet-20240620";
+// const MODEL: &str = "claude-3-5-sonnet-20240620";
+const MODEL: &str = "gpt-4o";
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -12,7 +13,7 @@ async fn main() -> anyhow::Result<()> {
 
     CombinedLogger::init(vec![
         TermLogger::new(
-            LevelFilter::Trace,
+            LevelFilter::Debug,
             Config::default(),
             TerminalMode::Mixed,
             ColorChoice::Auto,
@@ -25,14 +26,14 @@ async fn main() -> anyhow::Result<()> {
     ])
     .unwrap();
 
-    let cli = Client::new(MODEL);
+    let cli = Client::new(MODEL)?;
     let response = cli
         .message()
         .prompt("blank_form")?
         .image_file("form-felipe.jpg")?
         .send()
         .await?;
-    println!("Response:\n{}", response.text);
+    log::debug!("Response:\n{}", response.text);
 
     Ok(())
 }
