@@ -1,0 +1,362 @@
+{
+  "estimated_tokens": 800,
+  "sections": [
+    {
+      "name": "Patient Information",
+      "fields": [
+        {
+          "label": "Last Name",
+          "type": "text"
+        },
+        {
+          "label": "First Name",
+          "type": "text"
+        },
+        {
+          "label": "MI",
+          "type": "text"
+        },
+        {
+          "label": "Address",
+          "type": "text"
+        },
+        {
+          "label": "City",
+          "type": "text"
+        },
+        {
+          "label": "State",
+          "type": "text"
+        },
+        {
+          "label": "Zip",
+          "type": "text"
+        },
+        {
+          "label": "Home Phone",
+          "type": "text"
+        },
+        {
+          "label": "Birth Date",
+          "type": "date"
+        },
+        {
+          "label": "Sex",
+          "type": "radio",
+          "options": ["M", "F"]
+        },
+        {
+          "label": "Hospital/Physician Office Patient ID#",
+          "type": "text"
+        },
+        {
+          "label": "Accession #",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "name": "Insurance Billing Information",
+      "fields": [
+        {
+          "label": "Bill To",
+          "type": "checkbox",
+          "options": [
+            "Client/Institution",
+            "Medicare",
+            "Insurance (Complete insurance information below)",
+            "Patient"
+          ]
+        },
+        {
+          "label": "Patient Status",
+          "type": "checkbox",
+          "options": ["Inpatient", "Outpatient", "Non-Hospital Patient"]
+        },
+        {
+          "label": "Hospital Discharge Date",
+          "type": "date"
+        },
+        {
+          "label": "Primary Insurance",
+          "type": "checkbox",
+          "options": ["Medicare", "Medicaid", "Other Ins."]
+        },
+        {
+          "label": "Self / Spouse / Child",
+          "type": "radio",
+          "options": ["Self", "Spouse", "Child"]
+        },
+        {
+          "label": "Subscriber Last Name",
+          "type": "text"
+        },
+        {
+          "label": "First",
+          "type": "text"
+        },
+        {
+          "label": "MI",
+          "type": "text"
+        },
+        {
+          "label": "Beneficiary / Member #",
+          "type": "text"
+        },
+        {
+          "label": "Group #",
+          "type": "text"
+        },
+        {
+          "label": "Claims Address",
+          "type": "text"
+        },
+        {
+          "label": "City",
+          "type": "text"
+        },
+        {
+          "label": "State",
+          "type": "text"
+        },
+        {
+          "label": "Zip",
+          "type": "text"
+        },
+        {
+          "label": "Secondary Insurance",
+          "type": "checkbox",
+          "options": ["No", "Yes"]
+        },
+        {
+          "label": "ABN",
+          "type": "checkbox",
+          "options": ["No", "Yes"]
+        }
+      ]
+    },
+    {
+      "name": "Clinical Information",
+      "fields": [
+        {
+          "label": "Diagnoses Code",
+          "type": "text"
+        },
+        {
+          "label": "Brief Clinical History",
+          "type": "long_text"
+        },
+        {
+          "label": "Additional Information",
+          "type": "checkbox",
+          "options": ["See Attached Letter", "Copy of Pathology Report"]
+        }
+      ]
+    },
+    {
+      "name": "Client Information",
+      "fields": [
+        {
+          "label": "Ordering Physician Name",
+          "type": "text"
+        },
+        {
+          "label": "Physician NPI #",
+          "type": "text"
+        },
+        {
+          "label": "Physician Phone #",
+          "type": "text"
+        },
+        {
+          "label": "Physician Email",
+          "type": "text"
+        },
+        {
+          "label": "Communication",
+          "type": "checkbox",
+          "options": [
+            "Call Results to Phone Number",
+            "Fax Report to",
+            "Additional Fax Report to"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Specimen Information",
+      "fields": [
+        {
+          "label": "Collection Date",
+          "type": "date"
+        },
+        {
+          "label": "Collection Time",
+          "type": "time"
+        },
+        {
+          "label": "Body Site",
+          "type": "text"
+        },
+        {
+          "label": "Client Case #",
+          "type": "text"
+        },
+        {
+          "label": "Specimen ID#",
+          "type": "text"
+        },
+        {
+          "label": "Specimen Type",
+          "type": "checkbox",
+          "options": ["Blocks", "Adequate Tissue", "Unstained/Uncharged Slides"]
+        },
+        {
+          "label": "Other",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "name": "Pathology Consultation Request",
+      "fields": [
+        {
+          "label": "Pathology Consultation",
+          "type": "checkbox"
+        },
+        {
+          "label": "Preferred Subspecialty Group",
+          "type": "checkbox",
+          "options": [
+            "Breast",
+            "Cardio",
+            "Cyto",
+            "Derm",
+            "gI",
+            "gYN",
+            "Head/Neck",
+            "hepatic",
+            "Hem/Kidney",
+            "Neuro",
+            "Ocular",
+            "Ortho",
+            "Pulmonary",
+            "Soft Tissue"
+          ]
+        },
+        {
+          "label": "Special Stain(s) Requested",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "name": "Flow Cytometry",
+      "fields": [
+        {
+          "label": "Leukemia/Lymphoma Panel",
+          "type": "checkbox"
+        },
+        {
+          "label": "Lymphoma Panel for Tissue/Fluid",
+          "type": "checkbox"
+        },
+        {
+          "label": "HPH All Tests",
+          "type": "checkbox"
+        },
+        {
+          "label": "Hematopathy",
+          "type": "checkbox",
+          "options": [
+            "High Sensitivity",
+            "FLAER",
+            "Peripheral Blood",
+            "Bone Marrow"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Molecular Testing on Tissue Specimens",
+      "fields": [
+        {
+          "label": "BREAST",
+          "type": "checkbox",
+          "options": ["HER2 (FISH)"]
+        },
+        {
+          "label": "COLON/GI",
+          "type": "checkbox",
+          "options": [
+            "MSI-Microsatellite Instability",
+            "Analysis PCR (NGS)",
+            "BRAFV600E (NGS)",
+            "HER2 Gastric (FISH)"
+          ]
+        },
+        {
+          "label": "GLIOMA",
+          "type": "checkbox",
+          "options": [
+            "1P/19Q (FISH)",
+            "Ch1 P/19Q Deletion Analysis",
+            "1hX/IDH (MUT.",
+            "MGMT Methylation in GBM",
+            "EGFRAmpl (FISH)",
+            "EGFRvIII Eletion",
+            "Malig Gliom"
+          ]
+        },
+        {
+          "label": "LUNG",
+          "type": "checkbox",
+          "options": [
+            "ALK for NSCLC (FISH)",
+            "EGFR Mutation",
+            "KRAS (FISH)",
+            "EGFR (FISH/ALOH/VY)",
+            "QF-PCR Analysis"
+          ]
+        },
+        {
+          "label": "LYMPHOMA",
+          "type": "checkbox",
+          "options": [
+            " IGH an IGK PCR",
+            "PTEN",
+            "T Cell Clonality",
+            "IGH/BCL2 (FISH)"
+          ]
+        },
+        {
+          "label": "MELANOMA",
+          "type": "checkbox",
+          "options": ["BRAF(V600E)", "N-RAS Analysis*", "GNA/KAG"]
+        },
+        {
+          "label": "SOFT TISSUE",
+          "type": "checkbox",
+          "options": ["SYT", "SS18 (FISH)", "FOXO1", "BFC", "CBF-Endless Area"]
+        }
+      ]
+    },
+    {
+      "name": "Frequently Requested Tests",
+      "fields": [
+        {
+          "label": "Amyloid Typing by Mass Spectrometry",
+          "type": "checkbox"
+        },
+        {
+          "label": "Direct Immunofluorescence",
+          "type": "checkbox"
+        },
+        {
+          "label": "Electron Microscopy",
+          "type": "checkbox"
+        }
+      ]
+    }
+  ]
+}
