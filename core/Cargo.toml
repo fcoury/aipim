@@ -1,0 +1,20 @@
+[package]
+name = "aipim"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow.workspace = true
+async-trait.workspace = true
+base64 = "0.22.1"
+log.workspace = true
+reqwest = { version = "0.12.5", features = ["json"] }
+serde.workspace = true
+serde_json.workspace = true
+thiserror = "1.0.61"
+tokio.workspace = true
+
+[dev-dependencies]
+simplelog = "0.12.2"
+dotenv = "0.15.0"
+

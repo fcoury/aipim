@@ -1,6 +1,7 @@
 use std::path::Path;
 
 use base64::{engine::general_purpose, Engine as _};
+use serde::Serialize;
 
 use crate::provider::{AIProvider, Anthropic, OpenAI};
 
@@ -243,14 +244,14 @@ pub struct Message {
     pub images: Vec<Image>,
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Debug)]
 /// The `Image` struct represents an image to be sent to the AI provider.
 pub struct Image {
     pub data: String,
     pub mime_type: String,
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Debug)]
 /// The `Response` struct represents a response from the AI provider.
 pub struct Response {
     pub text: String,
