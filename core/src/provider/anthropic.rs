@@ -145,7 +145,7 @@ impl AIProvider for Anthropic {
             text: message.text,
         })];
 
-        for image in message.images {
+        for image in message.images.unwrap_or_default() {
             content.push(Content::Image(Image {
                 typ: "image".to_string(),
                 source: ImageData {
@@ -199,6 +199,9 @@ impl AIProvider for Anthropic {
         Ok(client::Response::new(response.text()))
     }
 }
+
+unsafe impl Send for Anthropic {}
+unsafe impl Sync for Anthropic {}
 
 #[derive(Serialize, Debug)]
 struct Request {
