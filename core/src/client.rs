@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use base64::{engine::general_purpose, Engine as _};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::provider::{AIProvider, Anthropic, OpenAI};
 
@@ -19,6 +19,9 @@ use crate::provider::{AIProvider, Anthropic, OpenAI};
 pub struct Client {
     provider: Box<dyn AIProvider>,
 }
+
+unsafe impl Send for Client {}
+unsafe impl Sync for Client {}
 
 impl Client {
     /// Creates a new `Client` instance based on the provided model.
@@ -66,6 +69,10 @@ impl Client {
     /// ```
     pub fn message(self) -> MessageBuilder {
         MessageBuilder::new(self)
+    }
+
+    pub async fn send_message(&self, message: Message) -> anyhow::Result<Response> {
+        self.provider.send_message(message).await
     }
 }
 
@@ -230,28 +237,28 @@ impl MessageBuilder {
     pub async fn send(self) -> anyhow::Result<Response> {
         let msg = Message {
             text: self.text.expect("text is required"),
-            images: self.images,
+            images: Some(self.images),
         };
 
         self.client.provider.send_message(msg).await
     }
 }
 
-#[derive(Debug)]
+#[derive(Deserialize, Debug)]
 /// The `Message` struct represents a message to be sent to the AI provider.
 pub struct Message {
     pub text: String,
-    pub images: Vec<Image>,
+    pub images: Option<Vec<Image>>,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 /// The `Image` struct represents an image to be sent to the AI provider.
 pub struct Image {
     pub data: String,
     pub mime_type: String,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 /// The `Response` struct represents a response from the AI provider.
 pub struct Response {
     pub text: String,

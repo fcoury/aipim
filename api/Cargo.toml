@@ -8,6 +8,7 @@ aipim = { version = "0.1", path = "../core" }
 anyhow.workspace = true
 async-trait.workspace = true
 axum = { version = "0.7.5", features = ["macros"] }
+axum-macros = "0.4.1"
 clap = { version = "4.5.7", features = ["derive"] }
 dotenv = "0.15.0"
 serde.workspace = true

@@ -124,7 +124,7 @@ impl AIProvider for OpenAI {
             text: message.text,
         })]);
 
-        for image in message.images {
+        for image in message.images.unwrap_or_default() {
             content.push(ComplexContent::Image(Image {
                 typ: "image_url".to_string(),
                 image_url: ImageUrl {
@@ -191,6 +191,9 @@ impl AIProvider for OpenAI {
         }
     }
 }
+
+unsafe impl Send for OpenAI {}
+unsafe impl Sync for OpenAI {}
 
 #[derive(Serialize, Debug)]
 /// Represents a request to the OpenAI API.

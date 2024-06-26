@@ -1,8 +1,10 @@
 use std::net::SocketAddr;
 
-use aipim::client::Response as AipimResponse;
+use aipim::client::{Client, Message, Response as AipimResponse};
 use axum::{
-    extract::{rejection::JsonRejection, FromRequest},
+    debug_handler,
+    extract::{rejection::JsonRejection, FromRequest, State},
+    http,
     response::{IntoResponse, Response},
     routing::post,
     Router,
@@ -11,6 +13,7 @@ use serde::Serialize;
 
 enum ApiError {
     JsonRejection(JsonRejection),
+    AnyhowError(anyhow::Error),
 }
 
 impl IntoResponse for ApiError {
@@ -22,6 +25,9 @@ impl IntoResponse for ApiError {
 
         let (status, message) = match self {
             ApiError::JsonRejection(rejection) => (rejection.status(), rejection.body_text()),
+            ApiError::AnyhowError(error) => {
+                (http::StatusCode::INTERNAL_SERVER_ERROR, error.to_string())
+            }
         };
 
         (status, ApiJson(ErrorResponse { message })).into_response()
@@ -31,6 +37,12 @@ impl IntoResponse for ApiError {
 impl From<JsonRejection> for ApiError {
     fn from(rejection: JsonRejection) -> Self {
         Self::JsonRejection(rejection)
+    }
+}
+
+impl From<anyhow::Error> for ApiError {
+    fn from(error: anyhow::Error) -> Self {
+        Self::AnyhowError(error)
     }
 }
 
@@ -47,13 +59,33 @@ where
     }
 }
 
-pub async fn listen(addr: SocketAddr) -> anyhow::Result<()> {
-    let app = Router::new().route("/api/messages", post(messages));
+#[derive(Clone)]
+struct AppState {
+    default_model: String,
+}
+
+pub async fn listen(addr: SocketAddr, default_model: impl Into<String>) -> anyhow::Result<()> {
+    let state = AppState {
+        default_model: default_model.into(),
+    };
+
+    let app = Router::new()
+        .route("/api/messages", post(messages))
+        .with_state(state);
     let listener = tokio::net::TcpListener::bind(&addr).await?;
     axum::serve(listener, app).await?;
     Ok(())
 }
 
-async fn messages() -> Result<ApiJson<AipimResponse>, ApiError> {
-    Ok(ApiJson(AipimResponse::new("Hello, world!")))
+#[debug_handler]
+async fn messages(
+    State(state): State<AppState>,
+    ApiJson(message): ApiJson<Message>,
+) -> Result<ApiJson<AipimResponse>, ApiError> {
+    let client = Client::new(&state.default_model)?;
+    client
+        .send_message(message)
+        .await
+        .map(ApiJson)
+        .map_err(Into::into)
 }
