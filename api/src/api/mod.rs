@@ -3,7 +3,7 @@ use std::net::SocketAddr;
 use aipim::client::{Client, Message, Response as AipimResponse};
 use axum::{
     debug_handler,
-    extract::{rejection::JsonRejection, FromRequest, State},
+    extract::{rejection::JsonRejection, DefaultBodyLimit, FromRequest, State},
     http,
     response::{IntoResponse, Response},
     routing::post,
@@ -74,6 +74,8 @@ pub async fn listen(addr: SocketAddr, default_model: impl Into<String>) -> anyho
 
     let app = Router::new()
         .route("/api/messages", post(messages))
+        // .layer(RequestBodyLimit::max(1024))
+        .layer(DefaultBodyLimit::max(52428800))
         .with_state(state);
 
     let listener = tokio::net::TcpListener::bind(&addr).await?;
@@ -87,7 +89,11 @@ async fn messages(
     ApiJson(message): ApiJson<Message>,
 ) -> Result<ApiJson<AipimResponse>, ApiError> {
     log::debug!("Sending message: {message:?}");
-    let client = Client::new(&state.default_model)?;
+    let model = match message.model {
+        Some(ref model) => model,
+        None => &state.default_model,
+    };
+    let client = Client::new(&model)?;
     client
         .send_message(message)
         .await
