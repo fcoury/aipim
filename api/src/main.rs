@@ -23,7 +23,8 @@ struct Cli {
 }
 
 fn default_address() -> SocketAddr {
-    "127.0.0.1:3000".parse().unwrap()
+    let port = std::env::var("PORT").unwrap_or_else(|_| "3000".to_string());
+    format!("127.0.0.1:{port}").parse().unwrap()
 }
 
 #[tokio::main]
