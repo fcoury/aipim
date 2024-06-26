@@ -8,7 +8,7 @@ use crate::client;
 
 use super::AIProvider;
 
-const MAX_TOKENS: u32 = 2048;
+const MAX_TOKENS: u32 = 8192;
 const BASE_URL: &str = "https://generativelanguage.googleapis.com/v1beta/";
 const MODELS: &[&str] = &[
     "gemini-1.0-pro",
