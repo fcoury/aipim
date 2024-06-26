@@ -65,13 +65,17 @@ struct AppState {
 }
 
 pub async fn listen(addr: SocketAddr, default_model: impl Into<String>) -> anyhow::Result<()> {
-    let state = AppState {
-        default_model: default_model.into(),
-    };
+    let default_model = default_model.into();
+
+    log::info!("Default model: {default_model}");
+    log::info!("Listening on {addr}...");
+
+    let state = AppState { default_model };
 
     let app = Router::new()
         .route("/api/messages", post(messages))
         .with_state(state);
+
     let listener = tokio::net::TcpListener::bind(&addr).await?;
     axum::serve(listener, app).await?;
     Ok(())
@@ -82,6 +86,7 @@ async fn messages(
     State(state): State<AppState>,
     ApiJson(message): ApiJson<Message>,
 ) -> Result<ApiJson<AipimResponse>, ApiError> {
+    log::debug!("Sending message: {message:?}");
     let client = Client::new(&state.default_model)?;
     client
         .send_message(message)

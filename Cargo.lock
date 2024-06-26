@@ -45,8 +45,10 @@ dependencies = [
  "axum-macros",
  "clap",
  "dotenv",
+ "log",
  "serde",
  "serde_json",
+ "simplelog",
  "tokio",
 ]
 
