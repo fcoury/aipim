@@ -1,8 +1,9 @@
 use std::path::Path;
 
 use base64::{engine::general_purpose, Engine as _};
+use serde::{Deserialize, Serialize};
 
-use crate::provider::{AIProvider, Anthropic, OpenAI};
+use crate::provider::{AIProvider, Anthropic, Google, OpenAI};
 
 /// The `Client` struct is responsible for interacting with different AI providers.
 ///
@@ -18,6 +19,9 @@ use crate::provider::{AIProvider, Anthropic, OpenAI};
 pub struct Client {
     provider: Box<dyn AIProvider>,
 }
+
+unsafe impl Send for Client {}
+unsafe impl Sync for Client {}
 
 impl Client {
     /// Creates a new `Client` instance based on the provided model.
@@ -50,6 +54,12 @@ impl Client {
             });
         }
 
+        if model.starts_with("gemini") {
+            return Ok(Self {
+                provider: Box::new(Google::default().with_model(model)),
+            });
+        }
+
         Err(anyhow::anyhow!("unsupported model: {model}"))
     }
 
@@ -65,6 +75,10 @@ impl Client {
     /// ```
     pub fn message(self) -> MessageBuilder {
         MessageBuilder::new(self)
+    }
+
+    pub async fn send_message(&self, message: Message) -> anyhow::Result<Response> {
+        self.provider.send_message(message).await
     }
 }
 
@@ -82,6 +96,7 @@ pub struct MessageBuilder {
     client: Client,
     text: Option<String>,
     images: Vec<Image>,
+    model: Option<String>,
 }
 
 impl MessageBuilder {
@@ -104,6 +119,7 @@ impl MessageBuilder {
             client,
             text: None,
             images: Vec::new(),
+            model: None,
         }
     }
 
@@ -211,6 +227,24 @@ impl MessageBuilder {
         Ok(self.image(data, mime_type))
     }
 
+    /// Sets the model for the message.
+    ///
+    /// # Arguments
+    ///
+    /// * `model` - The name of the model.
+    ///
+    /// # Examples
+    /// ```
+    /// use your_crate::client::{Client, MessageBuilder};
+    ///
+    /// let client = Client::new("gpt-3.5-turbo").unwrap();
+    /// let builder = client.message().text("Hello, world!").model("gpt-3.5-turbo");
+    /// ```
+    pub fn model(mut self, model: impl Into<String>) -> Self {
+        self.model = Some(model.into());
+        self
+    }
+
     /// Sends the message to the AI provider.
     ///
     /// # Errors
@@ -229,28 +263,30 @@ impl MessageBuilder {
     pub async fn send(self) -> anyhow::Result<Response> {
         let msg = Message {
             text: self.text.expect("text is required"),
-            images: self.images,
+            images: Some(self.images),
+            model: None,
         };
 
         self.client.provider.send_message(msg).await
     }
 }
 
-#[derive(Debug)]
+#[derive(Deserialize, Debug)]
 /// The `Message` struct represents a message to be sent to the AI provider.
 pub struct Message {
     pub text: String,
-    pub images: Vec<Image>,
+    pub images: Option<Vec<Image>>,
+    pub model: Option<String>,
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 /// The `Image` struct represents an image to be sent to the AI provider.
 pub struct Image {
     pub data: String,
     pub mime_type: String,
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 /// The `Response` struct represents a response from the AI provider.
 pub struct Response {
     pub text: String,
