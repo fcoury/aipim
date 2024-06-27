@@ -1,6 +1,6 @@
 [package]
 name = "aipim"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "AIPIM is a Rust library designed to provide a unified interface for interacting with various AI providers. It abstracts the complexities of different AI APIs, allowing developers to easily switch between providers without changing their codebase."
 license = "MIT"
