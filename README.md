@@ -4,6 +4,10 @@
   <img src="assets/icon-nobg.png" alt="AIPIM Icon" />
 </p>
 
+[![Build Status](https://github.com/fcoury/aipim/actions/workflows/rust.yml/badge.svg)](https://github.com/fcoury/fcoury/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Crates.io](https://img.shields.io/crates/v/aipim.svg)](https://crates.io/crates/aipim)
+
 AIPIM is a Rust library designed to provide a unified interface for interacting with various AI providers. It abstracts the complexities of different AI APIs, allowing developers to easily switch between providers without changing their codebase.
 
 ## Features

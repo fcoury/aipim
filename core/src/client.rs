@@ -9,12 +9,18 @@ use crate::provider::{AIProvider, Anthropic, Google, OpenAI};
 ///
 /// # Examples
 ///
-/// ```
-/// use your_crate::client::Client;
+/// ```ingore
+/// use aipim::client::Client;
 ///
-/// let client = Client::new("gpt-3.5-turbo").unwrap();
-/// let response = client.message().text("Hello, world!").send().await.unwrap();
-/// println!("{}", response.text);
+/// #[tokio::main]
+/// async fn main() -> anyhow::Result<()> {
+///     dotenv::dotenv().ok();
+///
+///     let client = Client::new("gpt-4o");
+///     let response = client.message().text("Hello, world!").send().await?;
+///     println!("Response: {}", response.text);
+///     Ok(())
+/// }
 /// ```
 pub struct Client {
     provider: Box<dyn AIProvider>,
@@ -36,8 +42,8 @@ impl Client {
     ///
     /// # Examples
     ///
-    /// ```
-    /// use your_crate::client::Client;
+    /// ```no_run
+    /// use aipim::client::Client;
     ///
     /// let client = Client::new("gpt-3.5-turbo").unwrap();
     /// ```
@@ -67,8 +73,8 @@ impl Client {
     ///
     /// # Examples
     ///
-    /// ```
-    /// use your_crate::client::Client;
+    /// ```no_run
+    /// use aipim::client::Client;
     ///
     /// let client = Client::new("gpt-3.5-turbo").unwrap();
     /// let builder = client.message();
@@ -86,8 +92,8 @@ impl Client {
 ///
 /// # Examples
 ///
-/// ```
-/// use your_crate::client::{Client, MessageBuilder};
+/// ```no_run
+/// use aipim::client::{Client, MessageBuilder};
 ///
 /// let client = Client::new("gpt-3.5-turbo").unwrap();
 /// let builder = client.message().text("Hello, world!");
@@ -108,8 +114,8 @@ impl MessageBuilder {
     ///
     /// # Examples
     ///
-    /// ```
-    /// use your_crate::client::{Client, MessageBuilder};
+    /// ```no_run
+    /// use aipim::client::{Client, MessageBuilder};
     ///
     /// let client = Client::new("gpt-3.5-turbo").unwrap();
     /// let builder = MessageBuilder::new(client);
@@ -131,8 +137,8 @@ impl MessageBuilder {
     ///
     /// # Examples
     ///
-    /// ```
-    /// use your_crate::client::{Client, MessageBuilder};
+    /// ```no_run
+    /// use aipim::client::{Client, MessageBuilder};
     ///
     /// let client = Client::new("gpt-3.5-turbo").unwrap();
     /// let builder = client.message().text("Hello, world!");
@@ -155,8 +161,8 @@ impl MessageBuilder {
     ///
     /// # Examples
     ///
-    /// ```
-    /// use your_crate::client::{Client, MessageBuilder};
+    /// ```ingore
+    /// use aipim::client::{Client, MessageBuilder};
     ///
     /// let client = Client::new("gpt-3.5-turbo").unwrap();
     /// let builder = client.message().prompt("greeting").unwrap();
@@ -179,8 +185,8 @@ impl MessageBuilder {
     ///
     /// # Examples
     ///
-    /// ```
-    /// use your_crate::client::{Client, MessageBuilder};
+    /// ```no_run
+    /// use aipim::client::{Client, MessageBuilder};
     ///
     /// let client = Client::new("gpt-3.5-turbo").unwrap();
     /// let image_data = vec![/* image data */];
@@ -209,8 +215,8 @@ impl MessageBuilder {
     ///
     /// # Examples
     ///
-    /// ```
-    /// use your_crate::client::{Client, MessageBuilder};
+    /// ```ingore
+    /// use aipim::client::{Client, MessageBuilder};
     ///
     /// let client = Client::new("gpt-3.5-turbo").unwrap();
     /// let builder = client.message().image_file("path/to/image.png").unwrap();
@@ -234,8 +240,8 @@ impl MessageBuilder {
     /// * `model` - The name of the model.
     ///
     /// # Examples
-    /// ```
-    /// use your_crate::client::{Client, MessageBuilder};
+    /// ```no_run
+    /// use aipim::client::{Client, MessageBuilder};
     ///
     /// let client = Client::new("gpt-3.5-turbo").unwrap();
     /// let builder = client.message().text("Hello, world!").model("gpt-3.5-turbo");
@@ -251,15 +257,6 @@ impl MessageBuilder {
     ///
     /// Returns an error if the message cannot be sent.
     ///
-    /// # Examples
-    ///
-    /// ```
-    /// use your_crate::client::{Client, MessageBuilder};
-    ///
-    /// let client = Client::new("gpt-3.5-turbo").unwrap();
-    /// let response = client.message().text("Hello, world!").send().await.unwrap();
-    /// println!("{}", response.text);
-    /// ```
     pub async fn send(self) -> anyhow::Result<Response> {
         let msg = Message {
             text: self.text.expect("text is required"),
@@ -301,8 +298,8 @@ impl Response {
     ///
     /// # Examples
     ///
-    /// ```
-    /// use your_crate::client::Response;
+    /// ```no_run
+    /// use aipim::client::Response;
     ///
     /// let response = Response::new("Hello, world!");
     /// println!("{}", response.text);

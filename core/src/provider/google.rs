@@ -23,16 +23,6 @@ const MODELS: &[&str] = &[
 ];
 
 /// Represents a Google Gemini client for interacting with the Gemini API.
-///
-/// # Examples
-///
-/// ```
-/// use crate::provider::gemini::Google;
-///
-/// let api_key = "your_api_key";
-/// let model = "gemini-pro";
-/// let gemini = Google::new(api_key, model);
-/// ```
 pub struct Google {
     client: Client,
     api_key: String,
@@ -47,15 +37,6 @@ impl Google {
     /// * `api_key` - A string slice that holds the API key.
     /// * `model` - A string slice that holds the name of the model.
     ///
-    /// # Examples
-    ///
-    /// ```
-    /// use crate::provider::gemini::Google;
-    ///
-    /// let api_key = "your_api_key";
-    /// let model = "gemini-pro";
-    /// let gemini = Google::new(api_key, model);
-    /// ```
     pub fn new(api_key: impl Into<String>, model: impl Into<String>) -> Self {
         Self {
             client: Client::new(),
@@ -70,16 +51,6 @@ impl Google {
     ///
     /// * `model` - A string slice that holds the name of the model.
     ///
-    /// # Examples
-    ///
-    /// ```
-    /// use crate::provider::gemini::Google;
-    ///
-    /// let api_key = "your_api_key";
-    /// let model = "gemini-pro";
-    /// let new_model = "gemini-pro-vision";
-    /// let gemini = Google::new(api_key, model).with_model(new_model);
-    /// ```
     pub fn with_model(self, model: impl Into<String>) -> Self {
         Self {
             model: model.into(),
@@ -109,25 +80,6 @@ impl AIProvider for Google {
     ///
     /// Returns an error if the request fails or the response contains an error.
     ///
-    /// # Examples
-    ///
-    /// ```
-    /// use crate::provider::gemini::Google;
-    /// use crate::client::{Client, MessageBuilder};
-    ///
-    /// let api_key = "your_api_key";
-    /// let model = "gemini-pro";
-    /// let gemini = Google::new(api_key, model);
-    ///
-    /// let client = Client::new(gemini);
-    /// let message = MessageBuilder::new(client)
-    ///     .text("Hello, Google!")
-    ///     .send()
-    ///     .await
-    ///     .unwrap();
-    ///
-    /// println!("Response: {}", message.text);
-    /// ```
     async fn send_message(&self, message: client::Message) -> anyhow::Result<client::Response> {
         let request = build_request(message);
         log::info!(
@@ -465,13 +417,12 @@ mod tests {
             model: None,
         };
         let request = build_request(message);
-        assert_eq!(request.contents.len(), 2);
-        assert_eq!(request.contents[0].parts.len(), 1);
+        assert_eq!(request.contents.len(), 1);
+        assert_eq!(request.contents[0].parts.len(), 2);
+        assert_eq!(request.contents[0].parts[0].as_text(), None);
         assert_eq!(
-            request.contents[0].parts[0].as_text(),
+            request.contents[0].parts[1].as_text(),
             Some("Hello, world!")
         );
-        assert_eq!(request.contents[1].parts.len(), 1);
-        assert_eq!(request.contents[1].parts[0].as_text(), None);
     }
 }

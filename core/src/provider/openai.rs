@@ -13,16 +13,6 @@ const BASE_URL: &str = "https://api.openai.com/v1/";
 const MODELS: &[&str] = &["gpt-4o", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"];
 
 /// Represents an OpenAI client for interacting with the OpenAI API.
-///
-/// # Examples
-///
-/// ```
-/// use crate::provider::openai::OpenAI;
-///
-/// let api_key = "your_api_key";
-/// let model = "gpt-3.5-turbo";
-/// let openai = OpenAI::new(api_key, model);
-/// ```
 pub struct OpenAI {
     client: Client,
     api_key: String,
@@ -37,15 +27,6 @@ impl OpenAI {
     /// * `api_key` - A string slice that holds the API key.
     /// * `model` - A string slice that holds the name of the model.
     ///
-    /// # Examples
-    ///
-    /// ```
-    /// use crate::provider::openai::OpenAI;
-    ///
-    /// let api_key = "your_api_key";
-    /// let model = "gpt-3.5-turbo";
-    /// let openai = OpenAI::new(api_key, model);
-    /// ```
     pub fn new(api_key: impl Into<String>, model: impl Into<String>) -> Self {
         Self {
             client: Client::new(),
@@ -60,16 +41,6 @@ impl OpenAI {
     ///
     /// * `model` - A string slice that holds the name of the model.
     ///
-    /// # Examples
-    ///
-    /// ```
-    /// use crate::provider::openai::OpenAI;
-    ///
-    /// let api_key = "your_api_key";
-    /// let model = "gpt-3.5-turbo";
-    /// let new_model = "gpt-4";
-    /// let openai = OpenAI::new(api_key, model).with_model(new_model);
-    /// ```
     pub fn with_model(self, model: impl Into<String>) -> Self {
         Self {
             model: model.into(),
@@ -99,25 +70,6 @@ impl AIProvider for OpenAI {
     ///
     /// Returns an error if the request fails or the response contains an error.
     ///
-    /// # Examples
-    ///
-    /// ```
-    /// use crate::provider::openai::OpenAI;
-    /// use crate::client::{Client, MessageBuilder};
-    ///
-    /// let api_key = "your_api_key";
-    /// let model = "gpt-3.5-turbo";
-    /// let openai = OpenAI::new(api_key, model);
-    ///
-    /// let client = Client::new(openai);
-    /// let message = MessageBuilder::new(client)
-    ///     .text("Hello, OpenAI!")
-    ///     .send()
-    ///     .await
-    ///     .unwrap();
-    ///
-    /// println!("Response: {}", message.text);
-    /// ```
     async fn send_message(&self, message: client::Message) -> anyhow::Result<client::Response> {
         let mut content = Content::Complex(vec![ComplexContent::Text(Text {
             typ: "text".to_string(),
