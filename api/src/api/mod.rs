@@ -93,7 +93,7 @@ async fn messages(
         Some(ref model) => model,
         None => &state.default_model,
     };
-    let client = Client::new(&model)?;
+    let client = Client::new(model)?;
     client
         .send_message(message)
         .await

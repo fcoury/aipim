@@ -103,7 +103,7 @@ impl AIProvider for OpenAI {
 
         let response = self
             .client
-            .post(&format!("{}chat/completions", BASE_URL))
+            .post(format!("{}chat/completions", BASE_URL))
             .header("Authorization", &format!("Bearer {}", self.api_key))
             .json(&request)
             .send()
